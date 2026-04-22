@@ -11,6 +11,11 @@ import UserManagement from './pages/UserManagement';
 import Marketing from './pages/Marketing';
 import Analytics from './pages/Analytics';
 import UserPortal from './pages/UserPortal';
+import AIDispatch from './pages/AIDispatch';
+import V2G from './pages/V2G';
+import VirtualPowerPlant from './pages/VirtualPowerPlant';
+import ChargingEcosystem from './pages/ChargingEcosystem';
+import CountyExpansion from './pages/CountyExpansion';
 import NotFound from './pages/NotFound';
 
 function ProtectedRoute({ children }) {
@@ -38,6 +43,11 @@ function AppRoutes() {
         <Route index element={<Dashboard />} />
         <Route path="stations" element={<StationMonitor />} />
         <Route path="analytics" element={<Analytics />} />
+        <Route path="ai-dispatch" element={<AIDispatch />} />
+        <Route path="v2g" element={<V2G />} />
+        <Route path="vpp" element={<VirtualPowerPlant />} />
+        <Route path="ecosystem" element={<ChargingEcosystem />} />
+        <Route path="county" element={<CountyExpansion />} />
         <Route path="finance" element={<FinancialSettlement />} />
         <Route path="users" element={<UserManagement />} />
         <Route path="marketing" element={<Marketing />} />
