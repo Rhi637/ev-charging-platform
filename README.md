@@ -52,7 +52,7 @@
 
 ```bash
 # 克隆项目
-git clone https://github.com/your-username/ev-charging-platform.git
+git clone https://github.com/Rhi637/ev-charging-platform.git
 cd ev-charging-platform
 
 # 安装依赖
