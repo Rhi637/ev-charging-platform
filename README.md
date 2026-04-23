@@ -116,5 +116,5 @@ ev-admin/
 
 ## 📮 联系方式
 
-- 项目主页：https://github.com/Rhi637/ev-charging-platform
-- Issue：https://github.com/Rhi637/ev-charging-platform/issues
+- 项目主页：https://rhi637.github.io/ev-charging-platform/
+- Issue：https://rhi637.github.io/ev-charging-platform/issues
