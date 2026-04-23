@@ -2,7 +2,7 @@
 
 > A full-stack electric vehicle charging station management platform with AI-powered dispatching, V2G bidirectional charging, and Virtual Power Plant (VPP) aggregation.
 
-[🌐 Live Demo](https://rhi637.github.io/ev-charging-platform/) · [中文文档](README_CN.md)
+[🌐 Live Demo](https://rhi637.github.io/ev-charging-platform/) · [▶️ YouTube](https://youtu.be/WXWEZkXSj6M) · [▶️ Bilibili](https://www.bilibili.com/video/BV1wGoMBiEcB/) · [中文文档](README_CN.md)
 
 ---
 

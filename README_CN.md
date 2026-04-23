@@ -2,6 +2,10 @@
 
 > 一站式电动汽车充电站运营管理系统，涵盖用户充电服务、站点监控、财务结算、运营分析等核心功能。
 
+[🌐 English Version](README.md) · [在线演示](https://rhi637.github.io/ev-charging-platform/) · [▶️ B站视频](https://www.bilibili.com/video/BV1wGoMBiEcB/) · [▶️ YouTube](https://youtu.be/WXWEZkXSj6M)
+
+---
+
 ## ✨ 功能特性
 
 ### 👤 用户端（C端）
