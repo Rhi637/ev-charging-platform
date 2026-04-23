@@ -33,7 +33,7 @@ export function AuthProvider({ children }) {
 
   const login = async (phone, password) => {
     const demoUser = { ...DEMO_USER, phone, name: '演示用户' };
-    const fakeToken = 'demo.' + btoa(JSON.stringify({ user: demoUser })) + '.demo';
+    const fakeToken = 'demo.' + btoa(unescape(encodeURIComponent(JSON.stringify({ user: demoUser })))) + '.demo';
     localStorage.setItem('ev_token', fakeToken);
     setUser(demoUser);
     return { user: demoUser };
@@ -41,7 +41,7 @@ export function AuthProvider({ children }) {
 
   const register = async (phone, password, name) => {
     const demoUser = { ...DEMO_USER, phone, name };
-    const fakeToken = 'demo.' + btoa(JSON.stringify({ user: demoUser })) + '.demo';
+    const fakeToken = 'demo.' + btoa(unescape(encodeURIComponent(JSON.stringify({ user: demoUser })))) + '.demo';
     localStorage.setItem('ev_token', fakeToken);
     setUser(demoUser);
     return { user: demoUser };
