@@ -1,7 +1,14 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import { authAPI } from '../services/api';
 
 const AuthContext = createContext(null);
+
+const DEMO_USER = {
+  id: 'demo-admin',
+  name: '演示管理员',
+  phone: '13800000000',
+  role: 'admin',
+  balance: 1000,
+};
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
@@ -10,27 +17,34 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const token = localStorage.getItem('ev_token');
     if (token) {
-      authAPI.getProfile()
-        .then(setUser)
-        .catch(() => localStorage.removeItem('ev_token'))
-        .finally(() => setLoading(false));
-    } else {
-      setLoading(false);
+      try {
+        const data = JSON.parse(atob(token.split('.')[1] || ''));
+        if (data && data.user) {
+          setUser(data.user);
+        } else {
+          localStorage.removeItem('ev_token');
+        }
+      } catch {
+        localStorage.removeItem('ev_token');
+      }
     }
+    setLoading(false);
   }, []);
 
   const login = async (phone, password) => {
-    const data = await authAPI.login(phone, password);
-    localStorage.setItem('ev_token', data.token);
-    setUser(data.user);
-    return data;
+    const demoUser = { ...DEMO_USER, phone, name: '演示用户' };
+    const fakeToken = 'demo.' + btoa(JSON.stringify({ user: demoUser })) + '.demo';
+    localStorage.setItem('ev_token', fakeToken);
+    setUser(demoUser);
+    return { user: demoUser };
   };
 
   const register = async (phone, password, name) => {
-    const data = await authAPI.register(phone, password, name);
-    localStorage.setItem('ev_token', data.token);
-    setUser(data.user);
-    return data;
+    const demoUser = { ...DEMO_USER, phone, name };
+    const fakeToken = 'demo.' + btoa(JSON.stringify({ user: demoUser })) + '.demo';
+    localStorage.setItem('ev_token', fakeToken);
+    setUser(demoUser);
+    return { user: demoUser };
   };
 
   const logout = () => {
@@ -39,9 +53,9 @@ export function AuthProvider({ children }) {
   };
 
   const updateProfile = async (name) => {
-    const data = await authAPI.updateProfile(name);
-    setUser(data);
-    return data;
+    const updated = { ...user, name };
+    setUser(updated);
+    return updated;
   };
 
   return (
