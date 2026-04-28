@@ -1,3 +1,4 @@
+[![GitHub Stars](https://img.shields.io/github/stars/Rhi637/ev-charging-platform?style=social)](https://github.com/Rhi637/ev-charging-platform/stargazers) [![GitHub Forks](https://img.shields.io/github/forks/Rhi637/ev-charging-platform?style=social)](https://github.com/Rhi637/ev-charging-platform/fork) [![Live Demo](https://img.shields.io/badge/ 在线演示-点击体验-green)](https://rhi637.github.io/ev-charging-platform/) [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](https://github.com/Rhi637/ev-charging-platform/blob/main/LICENSE)
 # ⚡ GreenCharge - EV Charging Management Platform
 
 > A full-stack electric vehicle charging station management platform with AI-powered dispatching, V2G bidirectional charging, and Virtual Power Plant (VPP) aggregation.
