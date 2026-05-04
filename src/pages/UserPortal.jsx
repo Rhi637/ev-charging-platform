@@ -123,6 +123,18 @@ function LoadingSpinner() {
   );
 }
 
+// 判断是否为演示模式（无后端环境）
+const isDemoMode = !import.meta.env.VITE_API_URL || import.meta.env.VITE_API_URL === '';
+
+// 演示模式模拟数据
+const DEMO_STATIONS = [
+  { id: 1, name: '国贸充电站', address: '北京市朝阳区国贸CBD', lat: 39.9087, lng: 116.4605, status: 'online', total_piles: 20, available_piles: 8, power_type: 'DC', max_power: 120, price_per_kwh: 1.2 },
+  { id: 2, name: '中关村充电站', address: '北京市海淀区中关村大街', lat: 39.9839, lng: 116.3165, status: 'online', total_piles: 15, available_piles: 3, power_type: 'DC', max_power: 90, price_per_kwh: 1.0 },
+  { id: 3, name: '望京充电站', address: '北京市朝阳区望京SOHO', lat: 39.9929, lng: 116.4803, status: 'maintenance', total_piles: 10, available_piles: 0, power_type: 'AC', max_power: 7, price_per_kwh: 0.8 },
+  { id: 4, name: '三里屯充电站', address: '北京市朝阳区三里屯路', lat: 39.9339, lng: 116.4541, status: 'online', total_piles: 12, available_piles: 5, power_type: 'DC', max_power: 150, price_per_kwh: 1.5 },
+  { id: 5, name: '西单充电站', address: '北京市西城区西单北大街', lat: 39.9127, lng: 116.3749, status: 'offline', total_piles: 8, available_piles: 0, power_type: 'AC', max_power: 7, price_per_kwh: 0.6 },
+];
+
 export default function UserPortal() {
   const { user } = useAuth();
 
@@ -180,6 +192,15 @@ export default function UserPortal() {
 
   // ==================== 初始化：加载站点、检查活跃会话、连接 WebSocket ====================
   useEffect(() => {
+    if (isDemoMode) {
+      // 演示模式：使用模拟数据，不发起真实 API 请求
+      setStationList(DEMO_STATIONS);
+      const firstOnline = DEMO_STATIONS.find((s) => s.status === 'online');
+      if (firstOnline) setReserveStationId(firstOnline.id);
+      setLoading(false);
+      return;
+    }
+
     // 获取充电站列表
     stationAPI.list()
       .then((data) => {
@@ -214,8 +235,12 @@ export default function UserPortal() {
       });
 
     // 连接 WebSocket
-    if (user?.id) {
-      connectSocket(user.id, user.role);
+    try {
+      if (user?.id) {
+        connectSocket(user.id, user.role);
+      }
+    } catch (err) {
+      console.warn('WebSocket 连接失败（演示模式）:', err);
     }
 
     return () => {
@@ -359,12 +384,14 @@ export default function UserPortal() {
     const stationName = station ? station.name : '未知站点';
 
     try {
-      await reservationAPI.create({
-        station_id: reserveStationId,
-        date: reserveDate,
-        time_slot: selectedTimeSlot,
-        duration: selectedDuration,
-      });
+      if (!isDemoMode) {
+        await reservationAPI.create({
+          station_id: reserveStationId,
+          date: reserveDate,
+          time_slot: selectedTimeSlot,
+          duration: selectedDuration,
+        });
+      }
       closeReserveModal();
       showToast(`预约成功！${stationName} ${reserveDate}`, 'success');
     } catch (err) {
@@ -373,7 +400,7 @@ export default function UserPortal() {
     }
   };
 
-  // ==================== 开始充电（调用真实 API） ====================
+  // ==================== 开始充电 ====================
   const startCharging = async () => {
     if (isCharging) return;
     if (!selectedStation) {
@@ -382,7 +409,13 @@ export default function UserPortal() {
     }
 
     try {
-      const session = await sessionAPI.start(selectedStation.id);
+      let session;
+      if (isDemoMode) {
+        // 演示模式：创建模拟会话
+        session = { id: 'demo-session-1', station_id: selectedStation.id, battery_level: 35, power_kw: 60, cost: 0, elapsed_seconds: 0, remain_minutes: 45 };
+      } else {
+        session = await sessionAPI.start(selectedStation.id);
+      }
       setActiveSession(session);
       setIsCharging(true);
       setBatteryLevel(session.battery_level || session.batteryLevel || 35);
@@ -428,12 +461,14 @@ export default function UserPortal() {
     }
   };
 
-  // ==================== 停止充电（调用真实 API） ====================
+  // ==================== 停止充电 ====================
   const stopCharging = async () => {
     if (!activeSession) return;
 
     try {
-      await sessionAPI.stop(activeSession.id);
+      if (!isDemoMode) {
+        await sessionAPI.stop(activeSession.id);
+      }
       if (chargingIntervalRef.current) {
         clearInterval(chargingIntervalRef.current);
         chargingIntervalRef.current = null;
@@ -456,7 +491,7 @@ export default function UserPortal() {
     }
   };
 
-  // ==================== 支付（调用真实 API） ====================
+  // ==================== 支付 ====================
   const closePaymentModal = () => {
     setShowPaymentModal(false);
     setPaying(false);
@@ -470,7 +505,9 @@ export default function UserPortal() {
 
     setPaying(true);
     try {
-      await paymentAPI.confirm(paymentSessionId);
+      if (!isDemoMode) {
+        await paymentAPI.confirm(paymentSessionId);
+      }
       closePaymentModal();
       showToast('支付成功！感谢使用绿能充电', 'success');
       setBatteryLevel(35);
