@@ -121,6 +121,8 @@ npm run dev:all
 
 The live demo runs in **demo mode** — click the "🚀 Demo Mode" button on the login page to explore all features without a backend.
 
+> **No backend needed!** Login with any 11-digit phone number (e.g. 13812345621) and any password, or click the green "Demo Mode" button.
+
 ---
 
 ## 📁 Project Structure
