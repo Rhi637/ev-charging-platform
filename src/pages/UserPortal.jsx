@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useAuth } from '../context/AuthContext';
@@ -50,6 +50,103 @@ function createStationIcon(status) {
     iconSize: [28, 28],
     iconAnchor: [14, 14],
   });
+}
+
+// ==================== 新增：地图定位控制组件 ====================
+function MapController({ targetLocation, flyToId, shouldFly }) {
+  const map = useMap();
+  
+  useEffect(() => {
+    if (targetLocation && shouldFly) {
+      const { lat, lng, zoom = 14 } = targetLocation;
+      map.flyTo([lat, lng], zoom, {
+        duration: 1.2,
+        easeLinearity: 0.25
+      });
+    }
+  }, [targetLocation, shouldFly, map, flyToId]);
+  
+  return null;
+}
+
+// ==================== 新增：定位按钮组件 ====================
+function LocateButton({ onLocate }) {
+  const map = useMap();
+  const [locating, setLocating] = useState(false);
+  
+  const handleLocate = () => {
+    setLocating(true);
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          map.flyTo([latitude, longitude], 14, {
+            duration: 1.2
+          });
+          
+          // 添加临时标记
+          const userMarker = L.marker([latitude, longitude], {
+            icon: L.divIcon({
+              html: `<div style="
+                background: #3b82f6;
+                width: 24px;
+                height: 24px;
+                border-radius: 50%;
+                border: 3px solid white;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              ">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5">
+                  <circle cx="12" cy="12" r="10"/>
+                  <circle cx="12" cy="12" r="3" fill="white"/>
+                </svg>
+              </div>`,
+              iconSize: [24, 24],
+              iconAnchor: [12, 12],
+            })
+          }).addTo(map);
+          
+          // 5秒后移除标记
+          setTimeout(() => map.removeLayer(userMarker), 5000);
+          
+          if (onLocate) onLocate({ lat: latitude, lng: longitude });
+          setLocating(false);
+        },
+        (error) => {
+          console.error('定位失败:', error);
+          if (onLocate) onLocate(null, error);
+          setLocating(false);
+        }
+      );
+    } else {
+      alert('您的浏览器不支持地理定位');
+      setLocating(false);
+    }
+  };
+  
+  return (
+    <button
+      onClick={handleLocate}
+      disabled={locating}
+      className="absolute bottom-20 right-4 z-[1000] bg-white dark:bg-gray-800 rounded-full p-3 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+      style={{ border: 'none', cursor: 'pointer' }}
+      title="定位到我"
+    >
+      {locating ? (
+        <svg className="w-5 h-5 text-blue-500 animate-spin" fill="none" viewBox="0 0 24 24">
+          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+        </svg>
+      ) : (
+        <svg className="w-5 h-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg>
+      )}
+    </button>
+  );
 }
 
 // Toast 通知组件
@@ -182,6 +279,11 @@ export default function UserPortal() {
 
   // 充电计时器
   const chargingIntervalRef = useRef(null);
+
+  // ==================== 新增：地图定位相关状态 ====================
+  const [targetLocation, setTargetLocation] = useState(null);
+  const [shouldFly, setShouldFly] = useState(false);
+  const [flyToId, setFlyToId] = useState(0);
 
   // 设置默认预约日期（明天）
   useEffect(() => {
@@ -319,11 +421,32 @@ export default function UserPortal() {
     return `${kw}kW`;
   };
 
-  // 选择站点
+  // ==================== 修改：选择站点时同时定位到该站点 ====================
   const handleSelectStation = (station) => {
     setSelectedStation(station);
+    const lat = station.lat ?? station.latitude;
+    const lng = station.lng ?? station.longitude;
+    
+    if (lat && lng) {
+      setTargetLocation({ lat, lng, zoom: 15 });
+      setShouldFly(true);
+      setFlyToId(prev => prev + 1);
+    }
+    
     const displayName = station.name || `充电站 #${station.id}`;
     showToast(`已定位到 ${displayName}`, 'info');
+  };
+
+  // ==================== 新增：手动定位到指定坐标 ====================
+  const flyToCoordinates = (lat, lng, zoom = 14, message = null) => {
+    if (lat && lng) {
+      setTargetLocation({ lat, lng, zoom });
+      setShouldFly(true);
+      setFlyToId(prev => prev + 1);
+      if (message) {
+        showToast(message, 'info');
+      }
+    }
   };
 
   // ==================== 扫码充电 ====================
@@ -596,7 +719,7 @@ export default function UserPortal() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* 地图区域 */}
           <div className="lg:col-span-2">
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden relative">
               <div className="p-4 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between">
                 <h2 className="font-semibold text-gray-800 dark:text-white flex items-center">
                   <svg className="w-5 h-5 text-blue-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -620,7 +743,7 @@ export default function UserPortal() {
                   </span>
                 </div>
               </div>
-              <div className="h-[400px]">
+              <div className="h-[400px] relative">
                 <MapContainer
                   center={[39.95, 116.40]}
                   zoom={12}
@@ -640,6 +763,9 @@ export default function UserPortal() {
                         key={station.id}
                         position={[lat, lng]}
                         icon={createStationIcon(displayStatus)}
+                        eventHandlers={{
+                          click: () => handleSelectStation(station)
+                        }}
                       >
                         <Popup>
                           <div style={{ minWidth: 180, fontFamily: 'system-ui, sans-serif' }}>
@@ -663,11 +789,38 @@ export default function UserPortal() {
                             <p style={{ color: '#6b7280', fontSize: 12, margin: '3px 0' }}>
                               空闲: {getStationFree(station)}/{getStationTotal(station)}
                             </p>
+                            <button
+                              onClick={() => handleSelectStation(station)}
+                              style={{
+                                marginTop: 8,
+                                padding: '4px 12px',
+                                backgroundColor: '#3b82f6',
+                                color: 'white',
+                                border: 'none',
+                                borderRadius: 6,
+                                fontSize: 12,
+                                cursor: 'pointer',
+                                width: '100%'
+                              }}
+                            >
+                              定位到此站
+                            </button>
                           </div>
                         </Popup>
                       </Marker>
                     );
                   })}
+                  {/* 定位按钮 */}
+                  <LocateButton onLocate={(loc, err) => {
+                    if (loc) showToast('已定位到您的位置', 'success');
+                    else if (err) showToast('定位失败，请检查权限', 'error');
+                  }} />
+                  {/* 地图定位控制器 */}
+                  <MapController 
+                    targetLocation={targetLocation} 
+                    flyToId={flyToId}
+                    shouldFly={shouldFly}
+                  />
                 </MapContainer>
               </div>
             </div>
@@ -748,8 +901,14 @@ export default function UserPortal() {
                             className="text-xs text-blue-500 dark:text-blue-400 font-medium hover:text-blue-700 dark:hover:text-blue-300 flex items-center"
                             onClick={(e) => {
                               e.stopPropagation();
+                              const lat = station.lat ?? station.latitude;
+                              const lng = station.lng ?? station.longitude;
                               const displayName = station.name || `充电站 #${station.id}`;
-                              showToast(`正在为您导航至 ${displayName}...`, 'info');
+                              if (lat && lng) {
+                                flyToCoordinates(lat, lng, 16, `正在为您导航至 ${displayName}...`);
+                              } else {
+                                showToast(`无法获取 ${displayName} 的位置信息`, 'error');
+                              }
                             }}
                           >
                             导航
