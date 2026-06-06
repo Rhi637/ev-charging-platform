@@ -11,7 +11,7 @@
 
 | Status | Feature | Description |
 |--------|---------|-------------|
-| 🟢 | **OCPP Protocol Support** | Add OCPP 1.6/2.0.1 integration for direct communication with real charging hardware |
+| 🔵 | **OCPP Protocol Support** | Add OCPP 1.6/2.0.1 integration for direct communication with real charging hardware |
 | 🟢 | **Dark/Light Theme Toggle** | User preference persistence, follow system preference by default |
 | 🟢 | **Unit Tests** | Jest + React Testing Library test coverage for core components and API routes |
 | 🟢 | **Mobile Responsive Polish** | Further mobile UX optimization for the charging portal |
