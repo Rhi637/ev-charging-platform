@@ -1,4 +1,4 @@
-[![GitHub Stars](https://img.shields.io/github/stars/Rhi637/ev-charging-platform?style=social)](https://github.com/Rhi637/ev-charging-platform/stargazers) [![GitHub Forks](https://img.shields.io/github/forks/Rhi637/ev-charging-platform?style=social)](https://github.com/Rhi637/ev-charging-platform/network) [![License](https://img.shields.io/github/license/Rhi637/ev-charging-platform)](LICENSE)
+[![GitHub Stars](https://img.shields.io/github/stars/Rhi637/ev-charging-platform?style=social)](https://github.com/Rhi637/ev-charging-platform/stargazers) [![GitHub Forks](https://img.shields.io/github/forks/Rhi637/ev-charging-platform?style=social)](https://github.com/Rhi637/ev-charging-platform/network) [![License](https://img.shields.io/github/license/Rhi637/ev-charging-platform)](LICENSE) [![Deploy Status](https://img.shields.io/github/actions/workflow/status/Rhi637/ev-charging-platform/static.yml?branch=main&label=deploy)](https://github.com/Rhi637/ev-charging-platform/actions)
 
 <!-- Language switcher -->
 [English](CONTRIBUTING.md) | [中文](CONTRIBUTING_CN.md)
