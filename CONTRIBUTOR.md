@@ -1,5 +1,7 @@
 # Contributor Guide
 
+> English version — for 中文版贡献指南请点击 [中文版 (CONTRIBUTING.md)](CONTRIBUTING.md)
+
 Thank you for your interest in contributing to the EV Charging Platform! This document provides guidelines and instructions for contributing to our project.
 
 ## Table of Contents
