@@ -1,5 +1,11 @@
-[![GitHub Stars](https://img.shields.io/github/stars/Rhi637/ev-charging-platform?style=social)](https://github.com/Rhi637/ev-charging-platform/stargazers) [![GitHub Forks](https://img.shields.io/github/forks/Rhi637/ev-charging-platform?style=social)](https://github.com/Rhi637/ev-charging-platform/fork) [![Live Demo](https://img.shields.io/badge/ 在线演示-点击体验-green)](https://rhi637.github.io/ev-charging-platform/) [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](https://github.com/Rhi637/ev-charging-platform/blob/main/LICENSE)
+[![GitHub Stars](https://img.shields.io/github/stars/Rhi637/ev-charging-platform?style=social)](https://github.com/Rhi637/ev-charging-platform/stargazers) [![GitHub Forks](https://img.shields.io/github/forks/Rhi637/ev-charging-platform?style=social)](https://github.com/Rhi637/ev-charging-platform/network) [![License](https://img.shields.io/github/license/Rhi637/ev-charging-platform)](LICENSE)
+
+<!-- Language switcher -->
+[English](CONTRIBUTING.md) | [中文](CONTRIBUTING_CN.md)
+
 # ⚡ GreenCharge - EV Charging Management Platform
+
+Contribute: [![Contribute EN](https://img.shields.io/badge/Contributing-EN-blue)](CONTRIBUTING.md) [![贡献 中文](https://img.shields.io/badge/%E8%B4%A1%E7%8C%AE-%E4%B8%AD%E6%96%87-red)](CONTRIBUTING_CN.md)
 
 > A full-stack electric vehicle charging station management platform with AI-powered dispatching, V2G bidirectional charging, and Virtual Power Plant (VPP) aggregation.
 
@@ -11,9 +17,9 @@
 
 ## 🌟 Overview
 
-**GreenCharge** is an open-source EV charging management platform built with React 19 and Express.js. It covers the complete charging ecosystem — from station monitoring and user charging to financial settlement and AI-driven optimization.
+**GreenCharge** is an open-source EV charging management platform built with React 19 and Express.js. It covers the complete charging ecosystem — from station monitoring and user charging to fin[...]
 
-Designed for charging station operators, fleet managers, and energy companies, GreenCharge explores cutting-edge directions including **AI Smart Dispatching**, **V2G (Vehicle-to-Grid)**, **Virtual Power Plants**, and **Charging Ecosystem Integration**.
+Designed for charging station operators, fleet managers, and energy companies, GreenCharge explores cutting-edge directions including **AI Smart Dispatching**, **V2G (Vehicle-to-Grid)**, **Virtual[...]
 
 ---
 
@@ -197,13 +203,15 @@ pm2 start server/index.js --name greencharge-api
 
 ## 🤝 Contributing
 
-Contributions are welcome!
+Contributions are welcome! Use the buttons above to open the English or 中文 contributing pages.
+
+[![Contribute EN](https://img.shields.io/badge/Contributing-EN-blue)](CONTRIBUTING.md) [![贡献 中文](https://img.shields.io/badge/%E8%B4%A1%E7%8C%AE-%E4%B8%AD%E6%96%87-red)](CONTRIBUTING_CN.md)
 
 1. Fork the repository
 2. Create your feature branch
 3. Commit your changes
 4. Push to the branch
-5. Open a Pull Request
+5. Open a Pull Request (use the PR template)
 
 ---
 
